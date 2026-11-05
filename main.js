@@ -253,11 +253,11 @@ function createPopupContent(feature, scenario) {
         <div class="popup-disclaimer">
           💡 本模擬為在地鄉親針對都市計畫方案之生活情境推演，供居民理性討論家園未來。
         </div>
-        <div class="popup-action-row">
+        <!--<div class="popup-action-row">
           <button class="btn-popup-share" onclick="generateShareCardForFeature('${feature.id}')">
             📸 分享此點生活推演圖卡
           </button>
-        </div>
+        </div> -->
       </div>
     </div>
   `;
@@ -365,12 +365,11 @@ function renderRoutes() {
           <div class="popup-disclaimer">
             💡 本模擬為在地鄉親針對都市計畫方案之生活情境推演，供居民理性討論家園未來。
           </div>
-          <div class="popup-action-row">
+          <!-- <div class="popup-action-row">
             <button class="btn-popup-share" onclick="generateShareCardForFeature('${feature.id}')">
               📸 分享此路段生活推演圖卡
             </button>
-          </div>
-        </div>
+          </div> -->
       </div>
     `;
 
@@ -435,32 +434,32 @@ function updateHudDashboard() {
 // =========================================================================
 
 // 為特定 Feature 產生分享圖卡
-function generateShareCardForFeature(featureId) {
-  if (!poiData) return;
-  const feature = poiData.features.find(f => f.id === featureId);
-  if (!feature) return;
+// function generateShareCardForFeature(featureId) {
+//   if (!poiData) return;
+//   const feature = poiData.features.find(f => f.id === featureId);
+//   if (!feature) return;
 
-  const props = feature.properties;
-  const scenario = isScenarioA ? props.scenario_A : props.scenario_B;
+//   const props = feature.properties;
+//   const scenario = isScenarioA ? props.scenario_A : props.scenario_B;
 
-  // 定位到該 POI 或路線中心
-  if (feature.geometry.type === 'Point') {
-    map.flyTo([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], 16, {
-      duration: 0.8
-    });
-  } else if (feature.geometry.type === 'LineString') {
-    const midIdx = Math.floor(feature.geometry.coordinates.length / 2);
-    const midCoord = feature.geometry.coordinates[midIdx];
-    map.flyTo([midCoord[1], midCoord[0]], 15, {
-      duration: 0.8
-    });
-  }
+//   // 定位到該 POI 或路線中心
+//   if (feature.geometry.type === 'Point') {
+//     map.flyTo([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], 16, {
+//       duration: 0.8
+//     });
+//   } else if (feature.geometry.type === 'LineString') {
+//     const midIdx = Math.floor(feature.geometry.coordinates.length / 2);
+//     const midCoord = feature.geometry.coordinates[midIdx];
+//     map.flyTo([midCoord[1], midCoord[0]], 15, {
+//       duration: 0.8
+//     });
+//   }
 
-  // 稍等地圖平移後擷取
-  setTimeout(() => {
-    captureAndShowShareModal(feature, scenario);
-  }, 900);
-}
+//   // 稍等地圖平移後擷取
+//   setTimeout(() => {
+//     captureAndShowShareModal(feature, scenario);
+//   }, 900);
+// }
 
 // 頂部全景圖卡生成
 function generateCurrentViewShareCard() {
@@ -483,38 +482,38 @@ function generateCurrentViewShareCard() {
 }
 
 // 核心擷取邏輯：抓取地圖畫面並合成至分享模板
-function captureAndShowShareModal(feature, scenario) {
-  const mapElement = document.getElementById('map');
-  const shareModal = document.getElementById('shareModal');
-  const previewImg = document.getElementById('shareCardPreview');
-  const loadingIndicator = document.getElementById('shareLoading');
+// function captureAndShowShareModal(feature, scenario) {
+//   const mapElement = document.getElementById('map');
+//   const shareModal = document.getElementById('shareModal');
+//   const previewImg = document.getElementById('shareCardPreview');
+//   const loadingIndicator = document.getElementById('shareLoading');
 
-  // 開啟 Modal 並顯示載入中
-  shareModal.classList.remove('hidden');
-  loadingIndicator.style.display = 'block';
-  previewImg.style.display = 'none';
+//   // 開啟 Modal 並顯示載入中
+//   shareModal.classList.remove('hidden');
+//   loadingIndicator.style.display = 'block';
+//   previewImg.style.display = 'none';
 
-  // 嘗試使用 html2canvas 捕捉地圖
-  html2canvas(mapElement, {
-    useCORS: true,
-    allowTaint: false,
-    logging: false,
-    scale: 1
-  }).then(canvas => {
-    // 取得地圖截圖 DataURL
-    let mapDataUrl = '';
-    try {
-      mapDataUrl = canvas.toDataURL('image/png');
-    } catch (e) {
-      console.warn('Canvas toDataURL tainted, 使用無底圖備用方案');
-    }
+//   // 嘗試使用 html2canvas 捕捉地圖
+//   html2canvas(mapElement, {
+//     useCORS: true,
+//     allowTaint: false,
+//     logging: false,
+//     scale: 1
+//   }).then(canvas => {
+//     // 取得地圖截圖 DataURL
+//     let mapDataUrl = '';
+//     try {
+//       mapDataUrl = canvas.toDataURL('image/png');
+//     } catch (e) {
+//       console.warn('Canvas toDataURL tainted, 使用無底圖備用方案');
+//     }
 
-    renderFinalTemplate(mapDataUrl, feature, scenario);
-  }).catch(err => {
-    console.warn('地圖底圖截圖受限，轉用純文字與圖表圖卡樣式：', err);
-    renderFinalTemplate('', feature, scenario);
-  });
-}
+//     renderFinalTemplate(mapDataUrl, feature, scenario);
+//   }).catch(err => {
+//     console.warn('地圖底圖截圖受限，轉用純文字與圖表圖卡樣式：', err);
+//     renderFinalTemplate('', feature, scenario);
+//   });
+// }
 
 function renderFinalTemplate(mapDataUrl, feature, scenario) {
   const previewImg = document.getElementById('shareCardPreview');
