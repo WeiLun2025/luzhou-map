@@ -93,7 +93,7 @@ luzhou-parallel-world/
       "properties": {
         "name": "新北市政府水利局蘆洲抽水站",
         "category": "infrastructure",
-        "location_description": "環堤大道與仁愛街492巷口旁",
+        "location_description": "環堤大道396號",
         "scenario_A": {
           "visible": true,
           "status": "鄰近水肥投入站與批發市場",

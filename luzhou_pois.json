@@ -66,7 +66,7 @@
         "category": "infrastructure",
         "type": "poi",
         "icon": "droplet",
-        "location_description": "環堤大道與仁愛街492巷口旁",
+        "location_description": "環堤大道396號",
         "scenario_A": {
           "visible": true,
           "headline": "⚠️ 水肥投入站緊鄰住宅！夏季恐吹南風飄惡臭",
@@ -266,14 +266,14 @@
         "description": "蘆洲北側最外圍臨河防汛幹道，連接成蘆橋與重陽橋。",
         "scenario_A": {
           "visible": true,
-          "headline": "🔴 環堤大道變大菜車走廊！清晨常態大回堵（車速 < 15 km/h）",
+          "headline": "🔴 環堤大道變大菜車走廊！清晨常態大回堵",
           "status": "每日估湧入 1,200~2,000 輛次批發車流",
           "impact": "清晨批發高峰大卡車排隊、違規臨停卸貨，原本的河堤林蔭道淪為超大型物流卡車通道，尖峰速率降至 15 km/h 以下（達到交通部 F 級嚴重回堵標準）！",
           "color": "#FF2A3A",
           "weight": 7,
           "opacity": 0.9,
           "dashArray": "18, 8",
-          "flow_status": "嚴重回堵（車速 < 15 km/h，達 F 級壅塞標準）"
+          "flow_status": "嚴重回堵"
         },
         "scenario_B": {
           "visible": true,
@@ -284,7 +284,7 @@
           "weight": 5,
           "opacity": 0.85,
           "dashArray": null,
-          "flow_status": "順暢平穩（車速 40-50 km/h，維持設計服務水準）"
+          "flow_status": "順暢平穩"
         },
         "evidence": {
           "official_url": "https://www.iot.gov.tw/cp.aspx?n=1116",
@@ -324,7 +324,7 @@
           "weight": 6,
           "opacity": 0.9,
           "dashArray": "14, 6",
-          "flow_status": "住宅巷弄大壅塞（服務水準惡化至 F 級）"
+          "flow_status": "住宅巷弄大壅塞"
         },
         "scenario_B": {
           "visible": true,
@@ -373,7 +373,7 @@
           "weight": 7,
           "opacity": 0.9,
           "dashArray": "16, 8",
-          "flow_status": "常態回堵至成蘆橋面（車速 < 15 km/h）"
+          "flow_status": "常態回堵至成蘆橋面"
         },
         "scenario_B": {
           "visible": true,
