@@ -1,0 +1,969 @@
+/* ==========================================================================
+   蘆洲平行世界：蘆北開發模擬器 (Luzhou Parallel World Simulator)
+   視覺風格：恐怖島 / 政策島極簡暗黑高對比警示風 (Dark Alert / Civic Tech)
+   ========================================================================== */
+
+:root {
+  --bg-main: #0c0d10;
+  --bg-card: rgba(20, 22, 28, 0.94);
+  --bg-card-hover: rgba(28, 31, 40, 0.98);
+  --border-dim: #262a35;
+  --border-alert-red: #ff3344;
+  --border-safe-green: #10b981;
+  --red-neon: #ff2a3a;
+  --red-glow: rgba(255, 42, 58, 0.4);
+  --green-neon: #10b981;
+  --green-glow: rgba(16, 185, 129, 0.35);
+  --blue-neon: #3b82f6;
+  --yellow-alert: #f59e0b;
+  --text-main: #f3f4f6;
+  --text-dim: #9ca3af;
+  --text-highlight: #ffffff;
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang TC", "Noto Sans TC", "Helvetica Neue", Arial, sans-serif;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-pill: 30px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ================= 地圖容器與免 API Key 暗黑底圖濾鏡 ================= */
+#map {
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  background: #0d0f14;
+}
+
+/* 恐怖島極簡暗黑高對比濾鏡 (無須 API Key，100% 繁中街道路名清楚) */
+.map-tiles-dark {
+  filter: brightness(0.65) invert(1) contrast(2) hue-rotate(190deg) saturate(0.2) brightness(0.8);
+}
+
+.leaflet-top.leaflet-right {
+  top: 16px;
+  right: 16px;
+}
+
+/* Leaflet 底圖切換器樣式優化 */
+.leaflet-control-layers {
+  background: rgba(20, 22, 28, 0.9) !important;
+  color: #fff !important;
+  border: 1px solid var(--border-dim) !important;
+  border-radius: var(--radius-sm) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.6) !important;
+  backdrop-filter: blur(8px);
+  font-size: 12px !important;
+}
+
+.leaflet-control-layers-expanded {
+  padding: 8px 12px !important;
+}
+
+.leaflet-control-layers label {
+  color: #e5e7eb !important;
+  cursor: pointer;
+  margin-bottom: 4px;
+}
+
+/* ================= 頂部導覽與情境控制膠囊 ================= */
+.top-navbar {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-dim);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+  max-width: 95vw;
+}
+
+.brand-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #fff;
+  padding-right: 10px;
+  border-right: 1px solid var(--border-dim);
+  white-space: nowrap;
+}
+
+.brand-badge .pulse-dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--red-neon);
+  border-radius: 50%;
+  animation: pulse-ring 1.8s infinite;
+}
+
+.scenario-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* 情境 A：紅色警示 */
+.btn-scenario-a {
+  background: rgba(255, 42, 58, 0.15);
+  color: #ff99a0;
+  border-color: rgba(255, 42, 58, 0.3);
+}
+
+.btn-scenario-a:hover {
+  background: rgba(255, 42, 58, 0.25);
+  color: #fff;
+}
+
+.btn-scenario-a.active {
+  background: var(--red-neon);
+  color: #fff;
+  border-color: #ff5e6c;
+  box-shadow: 0 0 16px var(--red-glow);
+  transform: scale(1.04);
+}
+
+/* 情境 B：綠色安全 */
+.btn-scenario-b {
+  background: rgba(16, 185, 129, 0.15);
+  color: #86efac;
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.btn-scenario-b:hover {
+  background: rgba(16, 185, 129, 0.25);
+  color: #fff;
+}
+
+.btn-scenario-b.active {
+  background: var(--green-neon);
+  color: #064e3b;
+  font-weight: 700;
+  border-color: #34d399;
+  box-shadow: 0 0 16px var(--green-glow);
+  transform: scale(1.04);
+}
+
+/* 功能選單按鈕 (背景說明、社群圖卡、圖層開關) */
+.tool-btn {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-main);
+  border: 1px solid var(--border-dim);
+  padding: 8px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.tool-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: #555;
+}
+
+.tool-btn.active-filter {
+  border-color: var(--yellow-alert);
+  color: var(--yellow-alert);
+  background: rgba(245, 158, 11, 0.15);
+}
+
+/* ================= 浮動儀表板 HUD (Impact Dashboard Bar) ================= */
+.hud-impact-bar {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--bg-card);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-dim);
+  box-shadow: 0 12px 36px rgba(0,0,0,0.7);
+  max-width: 92vw;
+  transition: all 0.3s ease;
+}
+
+.hud-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 130px;
+}
+
+.hud-item:not(:last-child) {
+  padding-right: 14px;
+  border-right: 1px solid var(--border-dim);
+}
+
+.hud-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.hud-value {
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.hud-value.danger {
+  color: var(--red-neon);
+}
+
+.hud-value.safe {
+  color: var(--green-neon);
+}
+
+.hud-value.warning {
+  color: var(--yellow-alert);
+}
+
+.hud-toggle-btn {
+  display: none;
+}
+
+/* ================= 恐怖島風格 Landing Page Modal ================= */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(5, 6, 8, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 2000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.modal-window {
+  background: #13151b;
+  border: 1px solid #2f3442;
+  border-radius: 16px;
+  max-width: 760px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 42, 58, 0.15);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  animation: modalIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalIn {
+  from { transform: translateY(20px) scale(0.97); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.modal-header {
+  padding: 24px 28px 16px 28px;
+  border-bottom: 1px solid var(--border-dim);
+  position: relative;
+}
+
+.modal-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 42, 58, 0.15);
+  color: var(--red-neon);
+  border: 1px solid rgba(255, 42, 58, 0.3);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.modal-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.5px;
+  line-height: 1.3;
+}
+
+.modal-subtitle {
+  font-size: 14px;
+  color: var(--text-dim);
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+.modal-close-icon {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close-icon:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.modal-body {
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #d1d5db;
+}
+
+/* 脈絡重點三部曲 */
+.timeline-card {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 14px;
+}
+
+.time-step {
+  background: #181a22;
+  border: 1px solid var(--border-dim);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+.time-step::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+}
+
+.time-step.step-1::before { background: #3b82f6; }
+.time-step.step-2::before { background: var(--red-neon); }
+.time-step.step-3::before { background: var(--yellow-alert); }
+
+.step-year {
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.time-step.step-1 .step-year { color: #60a5fa; }
+.time-step.step-2 .step-year { color: #f87171; }
+.time-step.step-3 .step-year { color: #fbbf24; }
+
+.step-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
+}
+
+.step-desc {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+
+/* 語音引言警示框 */
+.quote-box {
+  background: rgba(245, 158, 11, 0.08);
+  border-left: 4px solid var(--yellow-alert);
+  padding: 12px 16px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 13px;
+  color: #fde68a;
+  line-height: 1.5;
+}
+
+.quote-box cite {
+  display: block;
+  font-size: 11px;
+  color: #d97706;
+  margin-top: 4px;
+  font-style: normal;
+}
+
+/* 雙情境對比說明方塊 */
+.scenario-explain-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  background: #0f1015;
+  padding: 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-dim);
+}
+
+.scenario-pill {
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  background: #181b24;
+}
+
+.scenario-pill.danger {
+  border-left: 3px solid var(--red-neon);
+}
+
+.scenario-pill.safe {
+  border-left: 3px solid var(--green-neon);
+}
+
+.scenario-pill h4 {
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.scenario-pill.danger h4 { color: #f87171; }
+.scenario-pill.safe h4 { color: #34d399; }
+
+.scenario-pill p {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.4;
+}
+
+.modal-footer {
+  padding: 16px 28px 24px 28px;
+  border-top: 1px solid var(--border-dim);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-checkbox-label {
+  font-size: 12px;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.btn-cta-enter {
+  background: linear-gradient(135deg, #ff2a3a 0%, #b91c1c 100%);
+  color: #fff;
+  border: none;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 12px 28px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(255, 42, 58, 0.4);
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-cta-enter:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(255, 42, 58, 0.6);
+}
+
+/* ================= Custom Leaflet Popup (純粹生活衝擊推演・長輩友善大字版) ================= */
+.leaflet-popup-content-wrapper {
+  background: #151822 !important;
+  color: var(--text-main) !important;
+  border-radius: 14px !important;
+  border: 1px solid #363e52 !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85) !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  min-width: 290px;
+  max-width: 360px;
+}
+
+.leaflet-popup-tip {
+  background: #151822 !important;
+  border: 1px solid #363e52 !important;
+}
+
+.popup-container {
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.popup-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.popup-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 700;
+  width: fit-content;
+}
+
+.popup-badge-danger {
+  background: rgba(255, 42, 58, 0.2);
+  color: #ff6b77;
+  border: 1px solid #ff3344;
+}
+
+.popup-badge-safe {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  border: 1px solid #10b981;
+}
+
+.popup-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.35;
+  letter-spacing: -0.3px;
+}
+
+/* 📢 醒目生活結論大字卡 */
+.popup-headline-box {
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.45;
+  border-left: 4px solid transparent;
+}
+
+.popup-headline-box.danger {
+  background: rgba(255, 42, 58, 0.15);
+  color: #ff808b;
+  border-left-color: var(--red-neon);
+}
+
+.popup-headline-box.safe {
+  background: rgba(16, 185, 129, 0.15);
+  color: #6ee7b7;
+  border-left-color: var(--green-neon);
+}
+
+/* 📝 生活衝擊與觀察重點（口語白話、生活有感） */
+.popup-impact-text {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #f3f4f6;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.popup-location-tag {
+  font-size: 12px;
+  color: #9ca3af;
+  line-height: 1.4;
+}
+
+.popup-flow-note {
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid #283042;
+  background: #0f1118;
+  color: #d1d5db;
+}
+
+.popup-flow-note.danger b {
+  color: #f87171;
+}
+
+.popup-flow-note.safe b {
+  color: #34d399;
+}
+
+/* 底部防禦與操作區塊 */
+.popup-footer-box {
+  margin-top: 4px;
+  border-top: 1px solid #232836;
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 💡 安心防禦聲明 */
+.popup-disclaimer {
+  font-size: 11px;
+  line-height: 1.5;
+  color: #94a3b8;
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 3px solid #64748b;
+  padding: 6px 8px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.popup-action-row {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-popup-share {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border: 1px solid #3c4458;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s;
+}
+
+.btn-popup-share:hover {
+  background: var(--blue-neon);
+  border-color: var(--blue-neon);
+}
+
+/* ================= 擬真車流 Polyline 與 Hitbox 動畫樣式 ================= */
+.traffic-hitbox {
+  cursor: pointer;
+}
+
+/* 徹底移除點擊路線或點位時的藍白色選取外框 (Focus Outline) */
+path.leaflet-interactive:focus,
+path.leaflet-interactive:active,
+.leaflet-container svg path:focus,
+.leaflet-container svg path:active,
+.leaflet-container *:focus,
+.leaflet-container *:active {
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+.traffic-hover-highlight {
+  filter: drop-shadow(0 0 10px #ffffff) !important;
+  stroke-width: 8px !important;
+}
+
+.traffic-polyline-danger {
+  filter: drop-shadow(0 0 7px rgba(255, 42, 58, 0.85));
+  animation: traffic-dash 2s linear infinite;
+}
+
+.traffic-polyline-safe {
+  filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.7));
+}
+
+/* Hover 浮動即時 Tooltip */
+.traffic-tooltip {
+  background: rgba(17, 20, 28, 0.95) !important;
+  border: 1px solid #ff3344 !important;
+  color: #ffffff !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  padding: 6px 12px !important;
+  border-radius: 20px !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.8) !important;
+  pointer-events: none;
+}
+
+.traffic-tooltip-safe {
+  border-color: #10b981 !important;
+}
+
+@keyframes traffic-dash {
+  to {
+    stroke-dashoffset: -40;
+  }
+}
+
+/* 點位脈衝光暈 (Pulse Rings) 與 Hover 效果 */
+.poi-custom-container {
+  cursor: pointer;
+}
+
+.poi-hover-highlight .poi-core-dot {
+  transform: scale(1.35);
+  box-shadow: 0 0 14px #ffffff, 0 0 22px rgba(255, 255, 255, 0.9) !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.poi-hover-highlight .poi-pulse-ring {
+  transform: scale(1.6);
+  opacity: 1 !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.poi-pulse-marker {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.poi-core-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 8px rgba(0,0,0,0.8);
+  position: relative;
+  z-index: 2;
+}
+
+.poi-pulse-ring {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  opacity: 0.8;
+  animation: poi-ring-anim 2s infinite ease-out;
+  z-index: 1;
+}
+
+@keyframes poi-ring-anim {
+  0% { transform: scale(0.6); opacity: 0.9; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.9); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.4; }
+  100% { transform: scale(0.9); opacity: 1; }
+}
+
+/* ================= 社群圖卡分享預覽 Modal (Share Card Modal) ================= */
+.share-modal-window {
+  max-width: 620px;
+}
+
+.share-card-canvas-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #090a0d;
+  padding: 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-dim);
+}
+
+#shareCardPreview {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+  border: 1px solid #333;
+}
+
+/* 隱藏的擷取容器（用於渲染高畫質分享圖卡） */
+#exportCardTemplate {
+  display: none;
+  width: 600px;
+  background: #0f1117;
+  color: #fff;
+  border: 2px solid #ff3344;
+  border-radius: 12px;
+  overflow: hidden;
+  font-family: var(--font-family);
+  box-sizing: border-box;
+}
+
+.export-card-header {
+  background: linear-gradient(90deg, #1f2330 0%, #11131a 100%);
+  padding: 16px 20px;
+  border-bottom: 2px solid #ff3344;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.export-card-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.export-card-badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.export-card-map-img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  border-bottom: 1px solid #282d3c;
+}
+
+.export-card-content {
+  padding: 16px 20px;
+  background: #141720;
+}
+
+.export-card-poi-name {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #fff;
+}
+
+.export-card-impact {
+  font-size: 13px;
+  color: #d1d5db;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.export-card-footer {
+  padding: 10px 20px;
+  background: #0a0b0e;
+  border-top: 1px solid #232734;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+/* ================= 響應式手機適應 (Mobile Responsive) ================= */
+@media (max-width: 768px) {
+  .top-navbar {
+    top: 10px;
+    padding: 6px 10px;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .brand-badge {
+    font-size: 12px;
+    padding-right: 6px;
+  }
+
+  .panel-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .tool-btn span {
+    display: none; /* 手機版僅顯示圖示 */
+  }
+
+  .hud-impact-bar {
+    bottom: 12px;
+    padding: 8px 12px;
+    gap: 8px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    width: 95vw;
+    border-radius: var(--radius-sm);
+  }
+
+  .hud-item {
+    min-width: 105px;
+    font-size: 11px;
+  }
+
+  .hud-value {
+    font-size: 12px;
+  }
+
+  .scenario-explain-box {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-window {
+    max-height: 94vh;
+  }
+
+  .modal-header, .modal-body, .modal-footer {
+    padding: 16px 20px;
+  }
+
+  .modal-title {
+    font-size: 19px;
+  }
+}

@@ -1,0 +1,400 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "project": "蘆洲平行世界：蘆北開發模擬器",
+    "updated_at": "2026-11-05",
+    "author": "蘆洲在地居民",
+    "description": "蘆洲北側都市計畫（果菜市場與醫療專區）雙情境生活衝擊對比模擬數據，所有數據皆核對官方公文案號與主管機關公開報告"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "poi_market",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.46551617450022, 25.099142562928265]
+      },
+      "properties": {
+        "name": "批發市場與水肥投入站預定地（新北未來城）",
+        "category": "dispute",
+        "type": "poi",
+        "icon": "truck",
+        "location_description": "環堤大道旁、捷運機廠與蘆洲抽水站之間",
+        "scenario_A": {
+          "visible": true,
+          "headline": "🔴 批發採購車流估逾 1,200~2,000 輛次/日！清晨噪音與異味",
+          "status": "劃設 3.45 公頃大台北批發市場與水肥投入站",
+          "impact": "凌晨 2 點至上午採購尖峰，大卡車、發財車與批發客湧入環堤大道，衍生長期柴油噪音、廢氣與污水處理臭味，衝擊周邊居住品質。",
+          "badge_color": "#FF3344",
+          "stats": {
+            "traffic_load": "批發車流 1,200~2,000 輛次/日",
+            "odor_risk": "水肥+果菜殘渣異味風險",
+            "green_loss": "劃設 3.45 公頃批發市場"
+          }
+        },
+        "scenario_B": {
+          "visible": true,
+          "headline": "🟢 恢復 108 年公園綠地！無菜車噪音污染",
+          "status": "恢復 108 年原始公開展覽草案（公24 親水公園綠帶）",
+          "impact": "保留整片河岸親水公園綠帶，沒有清晨跨區大貨車頻繁進出，維持住宅與文教區寧靜乾淨的生活品質。",
+          "badge_color": "#10B981",
+          "stats": {
+            "traffic_load": "正常生活交通量",
+            "odor_risk": "零污染無異味",
+            "green_loss": "完整保留公24親水綠帶"
+          }
+        },
+        "evidence": {
+          "official_url": "https://wedid.ntpc.gov.tw/Governance/Detail/WwkvADr3lBJx",
+          "official_title": "新北市政府施政成果網 - 蘆北批發市場招商規劃專頁（直連）",
+          "doc_agency": "新北市政府城鄉發展局 / 農業局",
+          "doc_number": "新北市都市計畫委員會第 142 次大會審議紀錄",
+          "doc_excerpt": "【新北市施政專頁公告】：『蘆北整體開發區將建構複合型智慧批發市場，結合冷鏈物流與商業機能...』\n【官員現場發言紀錄】：新北市農業局長說明會公開坦承：『這是財務考量，三重沒搬過來，銀河灣也沒辦法執行，經費根本找不到...』證實市場進駐為財務平衡考量，非蘆洲在地原生需求。",
+          "note": "依新北果菜運銷公司營運規模統計，三重果菜市場現址每日大卡車約 300~500 輛，加計採購小貨車與批發機車，全場清晨總流量逾 1,200 至 2,000 輛次；新北市都委會審議草案中劃設批發市場用地規模約 3.45 公頃。"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_pumping_station",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.46348672492027, 25.0995275041252]
+      },
+      "properties": {
+        "name": "新北市政府水利局蘆洲抽水站周邊",
+        "category": "infrastructure",
+        "type": "poi",
+        "icon": "droplet",
+        "location_description": "環堤大道與仁愛街492巷口旁",
+        "scenario_A": {
+          "visible": true,
+          "headline": "⚠️ 水肥投入站緊鄰住宅！夏季恐吹南風飄惡臭",
+          "status": "劃設水肥投入站與果菜污水沉澱槽",
+          "impact": "細部計畫將全區水肥站與果菜沉澱槽劃設於抽水站旁用地，鄰近市區住宅，夏季南風恐將異味吹入舊市區。",
+          "badge_color": "#F59E0B",
+          "stats": {
+            "traffic_load": "抽水車與水肥清運車出入",
+            "odor_risk": "夏季異味擴散高風險",
+            "green_loss": "防洪緩衝綠帶縮減"
+          }
+        },
+        "scenario_B": {
+          "visible": true,
+          "headline": "🟢 純防洪排澇機能！周邊綠化無臭味",
+          "status": "維持純水利防洪機能與綠化步道",
+          "impact": "維持原本防汛防洪機能，抽水站周邊進行綠化緩衝，不增設水肥投入站或垃圾轉運設施。",
+          "badge_color": "#06B6D4",
+          "stats": {
+            "traffic_load": "公務巡檢車流",
+            "odor_risk": "無異味環境",
+            "green_loss": "完整防洪綠覆"
+          }
+        },
+        "evidence": {
+          "official_url": "https://www.planning.ntpc.gov.tw/home.jsp?id=2d7f8d672722ee26",
+          "official_title": "新北市城鄉發展局 - 蘆洲通盤檢討都市計畫公告專區（直連）",
+          "doc_agency": "新北市政府水利局 / 城鄉發展局",
+          "doc_number": "111 年新北市變更蘆洲細部計畫草案（第 18 頁）",
+          "doc_excerpt": "【都市計畫草案土地使用計畫說明】：配合蘆洲地區公共衛生與污泥集中處理，於抽水站南側地塊增設水肥投入站及沉澱槽，作為區段徵收範圍內廢水與公共水肥卸存設施。",
+          "note": "在地居民與民代質疑水肥投入站距離鄰近住宅區僅數百公尺，且未進行獨立環境影響評估，恐造成夏季惡臭外溢。"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_huanti_road",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.46959801478167, 25.094839938623632]
+      },
+      "properties": {
+        "name": "水湳街與舊市區連通口（交通咽喉節點）",
+        "category": "traffic",
+        "type": "poi",
+        "icon": "alert-triangle",
+        "location_description": "水湳街、仁愛街與重劃區邊界咽喉交會口",
+        "scenario_A": {
+          "visible": true,
+          "headline": "🔴 菜車繞道鑽窄巷！巷弄道路服務水準降至 F 級",
+          "status": "批發車流溢流穿透舊社區破口",
+          "impact": "環堤大道一旦回堵，送菜貨車與採購機車為了避開塞車，將鑽入 6-8 米寬的水湳街與仁愛街窄巷，道路超載回堵（LOS 降至 F 級），威脅仁愛國小學童與長輩通行安全！",
+          "badge_color": "#EF4444",
+          "stats": {
+            "traffic_load": "巷弄道路達 F 級超載",
+            "odor_risk": "柴油廢氣灌入住宅區",
+            "green_loss": "通學步道安全惡化"
+          }
+        },
+        "scenario_B": {
+          "visible": true,
+          "headline": "🟢 維持單純住宅巷道！通學生活好安心",
+          "status": "維持社區單純生活路網（人車分流）",
+          "impact": "外來大型菜車不進入住宅社區，水湳街與仁愛街維持原本寧靜生活圈與安全的學童通學步道，道路服務水準維持 C 級以上穩定水準。",
+          "badge_color": "#10B981",
+          "stats": {
+            "traffic_load": "住宅生活車流（LOS C級）",
+            "odor_risk": "空氣品質良好",
+            "green_loss": "通學步道安全無虞"
+          }
+        },
+        "evidence": {
+          "official_url": "https://www.iot.gov.tw/cp.aspx?n=1116",
+          "official_title": "交通部運輸研究所 - 市區道路服務水準分析作業指引（直連）",
+          "doc_agency": "交通部運輸研究所 / 新北市交通局",
+          "doc_number": "交通部運研所市區道路容量分析規範（HCM 標準）",
+          "doc_excerpt": "【交通工程容量評定標準】：6-8 米單車道混合巷道容量設計上限為 400~600 pcu/h，僅供地區生活進出。當外環幹道壅塞致使區域性跨區貨車及機車溢流轉移時，容積飽和度（V/C）將迅速超過 1.0，服務水準直接惡化至最劣等之 F 級（強制性停滯、走走停停）。",
+          "quote": "在地水湳里居民座談會：「水湳街路幅非常窄，如果清晨送菜大卡車為搶快鑽進來，老人家買菜散步與小學生通學將處於極度危險的人車爭道環境！」"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_hospital",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.46148859109414, 25.094889368347044]
+      },
+      "properties": {
+        "name": "蘆洲急重症醫院預定地（醫療設施專區）",
+        "category": "public_facility",
+        "type": "poi",
+        "icon": "heart-pulse",
+        "location_description": "靠近三民路與成蘆橋頭交界處",
+        "scenario_A": {
+          "visible": true,
+          "headline": "⚠️ 醫院遭果菜市場整包包裹！審查遭退回恐延宕 3~5 年",
+          "status": "包裹審查遭中央退回，進度全面卡關",
+          "impact": "新北市府堅持將爭議性高的果菜市場與急重症醫院綑綁審議，遭內政部都委會認定重大變更退回重辦公展，導致三蘆 50 萬居民期盼的醫療資源被拖延數年！",
+          "badge_color": "#F59E0B",
+          "stats": {
+            "traffic_load": "成蘆橋壅塞恐阻礙救護動線",
+            "odor_risk": "緊鄰市場排風口",
+            "green_loss": "審查退回進度延宕 3~5 年"
+          }
+        },
+        "scenario_B": {
+          "visible": true,
+          "headline": "🟢 醫院與市場解聯脫鉤！優先獨立審議動工",
+          "status": "兩案脫鉤加速興建，優先補齊醫療缺口",
+          "impact": "將救人的急重症醫院獨立成案送審，加速取得衛福部與內政部核定，優先引進醫學中心等級團隊，補足三蘆地區重症醫療缺口。",
+          "badge_color": "#3B82F6",
+          "stats": {
+            "traffic_load": "急重症救護綠色專線",
+            "odor_risk": "純淨安心醫療環境",
+            "green_loss": "獨立優先動工興建"
+          }
+        },
+        "evidence": {
+          "official_url": "https://www.moi.gov.tw/News_Content.aspx?n=4&s=290947",
+          "official_title": "內政部全球資訊網 - 蘆洲南北側農業區都市計畫審查專題新聞（直連）",
+          "doc_agency": "內政部國土管理署都市計畫委員會",
+          "doc_number": "內政部都市計畫委員會專案小組審查會議紀錄",
+          "doc_excerpt": "【內政部都委會審查結論】：新北市府於 108 年公開展覽時並無包括三重果菜批發市場遷建之規劃，於 111 年送審階段始增列納入，涉及重大實質計畫競合與政策重大調整。依《都市計畫法》第 19 條規定，請新北市政府針對果菜市場搬遷案重新辦理公開展覽與地方說明會，凝聚民意共識後再報中央審議。\n【決議影響】：因全案包裹送審，致使原無爭議、廣受支持之醫療專區（蘆洲急重症醫院）隨整體區段徵收進度退回重展，動工時程受嚴重牽連。",
+          "note": "地方跨黨派立委、議員及公民團體一致呼籲將急重症醫院與果菜市場解聯脫鉤，優先核定醫療專區獨立動工。"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_metro_depot",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.4682, 25.1008]
+      },
+      "properties": {
+        "name": "捷運五泰輕軌 / 機廠預定地",
+        "category": "public_facility",
+        "type": "poi",
+        "icon": "train",
+        "location_description": "蘆北開發區東北側臨淡水河畔",
+        "scenario_A": {
+          "visible": true,
+          "headline": "⚠️ 輕軌出入口與菜車車流交織衝突",
+          "status": "機廠出入口與批發物流動線衝突",
+          "impact": "清晨五泰輕軌列車調度出入動線，與大量重型果菜貨車共用環堤大道，造成關鍵路口交織阻塞與行車風險。",
+          "badge_color": "#F59E0B",
+          "stats": {
+            "traffic_load": "重車動線混亂交織",
+            "odor_risk": "一般環境",
+            "green_loss": "空間規劃受限"
+          }
+        },
+        "scenario_B": {
+          "visible": true,
+          "headline": "🟢 捷運結合河岸親水公園！休閒生活新地標",
+          "status": "綠能機廠結合河岸生態親水廊帶",
+          "impact": "機廠周邊規劃立體綠化公園，串連二重疏洪道與淡水河岸自行車道，成為居民休閒散步的親水新地標。",
+          "badge_color": "#10B981",
+          "stats": {
+            "traffic_load": "純綠能軌道大眾運輸",
+            "odor_risk": "無污染",
+            "green_loss": "完整河岸休閒公園"
+          }
+        },
+        "evidence": {
+          "official_url": "https://www.dorts.ntpc.gov.tw/project/view/wutai",
+          "official_title": "新北市捷運工程局 - 五泰輕軌專案進度專頁（直連）",
+          "doc_agency": "行政院 / 交通部鐵道局 / 新北市捷運工程局",
+          "doc_number": "行政院 112 年 4 月 14 日院臺交字第 1121008061 號函核定本",
+          "doc_excerpt": "【行政院核定報告書節錄】：五泰輕軌自三重經蘆洲至五股、泰山，機廠規劃於蘆北開發區東北側。機廠出入線銜接主線需維持完整緊急救援與每日列車出入廠之運轉淨空，相關道路系統應避免受高密度大型貨車及物流車隊干擾。",
+          "note": "五泰輕軌機廠周邊道路需兼顧防汛及軌道維修機能，不適宜混雜超大規模跨區果菜批發車流。"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "route_huanti",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [121.4580, 25.0945],
+          [121.4608, 25.0970],
+          [121.4635, 25.0995],
+          [121.4655, 25.0998],
+          [121.4710, 25.0988],
+          [121.4760, 25.0970],
+          [121.4820, 25.0940],
+          [121.4870, 25.0905],
+          [121.4920, 25.0870]
+        ]
+      },
+      "properties": {
+        "name": "環堤大道（成蘆橋至重陽橋外環主幹道）",
+        "category": "traffic_route",
+        "type": "route",
+        "description": "蘆洲北側最外圍臨河防汛幹道，連接成蘆橋與重陽橋。",
+        "scenario_A": {
+          "visible": true,
+          "headline": "🔴 環堤大道變大菜車走廊！清晨常態大回堵（車速 < 15 km/h）",
+          "status": "每日估湧入 1,200~2,000 輛次批發車流",
+          "impact": "清晨批發高峰大卡車排隊、違規臨停卸貨，原本的河堤林蔭道淪為超大型物流卡車通道，尖峰速率降至 15 km/h 以下（達到交通部 F 級嚴重回堵標準）！",
+          "color": "#FF2A3A",
+          "weight": 7,
+          "opacity": 0.9,
+          "dashArray": "18, 8",
+          "flow_status": "嚴重回堵（車速 < 15 km/h，達 F 級壅塞標準）"
+        },
+        "scenario_B": {
+          "visible": true,
+          "headline": "🟢 順暢生活林蔭廊道！維持居民日常通勤與防汛",
+          "status": "維持原都市規劃設計容量，車流順暢穩定",
+          "impact": "供居民日常通勤、自行車休憩散步與河堤防汛專用，保留綠化人行步道，車流維持設計服務水準（40-50 km/h）。",
+          "color": "#10B981",
+          "weight": 5,
+          "opacity": 0.85,
+          "dashArray": null,
+          "flow_status": "順暢平穩（車速 40-50 km/h，維持設計服務水準）"
+        },
+        "evidence": {
+          "official_url": "https://www.iot.gov.tw/cp.aspx?n=1116",
+          "official_title": "交通部運輸研究所 - 市區道路服務水準分析作業指引（直連）",
+          "doc_agency": "交通部運輸研究所",
+          "doc_number": "交通部市區道路服務水準評定標準（LOS F 級規範）",
+          "doc_excerpt": "【國家交通標準】：幹道平均旅行速率小於 15 km/h 定義為 F 級（極端壅塞走走停停、道路容量超載）；正常市區主幹道自由車流標準為 40-50 km/h。",
+          "note": "環堤大道為雙向四線道，一旦清晨雙向路側遭菜車排隊臨停佔用一車道，道路容量將直接砍半，使整體路廊迅速陷入 F 級嚴重回堵。"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "route_shuinan_spill",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [121.465516, 25.099142],
+          [121.467800, 25.096800],
+          [121.469598, 25.094840],
+          [121.470600, 25.092500],
+          [121.469500, 25.089500],
+          [121.468200, 25.086500]
+        ]
+      },
+      "properties": {
+        "name": "水湳街 — 仁愛街舊市區巷弄溢流路徑",
+        "category": "traffic_route",
+        "type": "route",
+        "description": "從批發市場預定地經水湳街咽喉口，穿透深入舊市區 6-8 米狹窄巷道。",
+        "scenario_A": {
+          "visible": true,
+          "headline": "🔴 菜車繞進 6 米巷！危及仁愛國小學童與長輩安全",
+          "status": "外溢穿透舊社區窄巷高危險路段",
+          "impact": "環堤大道塞爆後，送菜小貨車與採購機車轉進水湳街、仁愛街等 6-8 米住宅窄巷，住宅區道路容量嚴重超載，長輩散步與學童通學極度危險！",
+          "color": "#F97316",
+          "weight": 6,
+          "opacity": 0.9,
+          "dashArray": "14, 6",
+          "flow_status": "住宅巷弄大壅塞（服務水準惡化至 F 級）"
+        },
+        "scenario_B": {
+          "visible": true,
+          "headline": "🟢 單純社區生活路網！學童通學好安全",
+          "status": "無外來跨區菜車穿透，維持寧靜住宅巷道",
+          "impact": "沒有批發物流車流借道穿透，巷弄回歸純住宅使用，維護仁愛國小學區與社區長輩的走路安全。",
+          "color": "#10B981",
+          "weight": 4,
+          "opacity": 0.8,
+          "dashArray": null,
+          "flow_status": "寧靜社區道路（安全通學）"
+        },
+        "evidence": {
+          "official_url": "https://www.planning.ntpc.gov.tw/",
+          "official_title": "新北市城鄉發展局 - 蘆洲通盤檢討道路系統規劃說明（直連）",
+          "doc_agency": "新北市政府城鄉發展局 / 交通局",
+          "doc_number": "新北市都市計畫道路規劃與生活圈交通衝擊規範",
+          "doc_excerpt": "【道路功能分級標準】：6-8 米社區生活巷道僅供內部生活服務，不具備承擔區域性批發轉運車流能力。重車穿透將造成鋪面嚴重損耗並大幅提高轉角死角事故率。",
+          "note": "水湳街、仁愛街多為老舊住宅聚落，路幅狹窄且兩側停放汽機車，一旦大貨車進入即難以會車。"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "route_chenglu_bridge",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [121.4490, 25.1050],
+          [121.4550, 25.1008],
+          [121.4605, 25.0965],
+          [121.4625, 25.0935]
+        ]
+      },
+      "properties": {
+        "name": "成蘆大橋 / 三民路交會匝道口",
+        "category": "traffic_route",
+        "type": "route",
+        "description": "蘆洲往返五股成洲／八里的重要跨河主橋，接三民路與成蘆橋引道。",
+        "scenario_A": {
+          "visible": true,
+          "headline": "🔴 成蘆橋頭嚴重回堵！救護車搶救恐受困車陣",
+          "status": "跨河大橋匝道交織瓶頸加劇",
+          "impact": "五股成洲經成蘆橋開入蘆洲之批發車流與通勤車潮匯流，橋頭三民路形成回堵瓶頸，救護車往返新光或淡水馬偕的黃金搶救時間面臨塞車威脅！",
+          "color": "#EF4444",
+          "weight": 7,
+          "opacity": 0.9,
+          "dashArray": "16, 8",
+          "flow_status": "常態回堵至成蘆橋面（車速 < 15 km/h）"
+        },
+        "scenario_B": {
+          "visible": true,
+          "headline": "🟢 獨立醫療救援動線！急救綠色通道暢通",
+          "status": "急重症醫院優先完工，救護專線暢通",
+          "impact": "救護車由三民路與專屬快速匝道直通新北與台北各醫學中心，動線順暢不被批發大貨車卡住。",
+          "color": "#3B82F6",
+          "weight": 5,
+          "opacity": 0.85,
+          "dashArray": null,
+          "flow_status": "黃金救援綠色專用通道"
+        },
+        "evidence": {
+          "official_url": "https://www.traffic.ntpc.gov.tw/",
+          "official_title": "新北市政府交通局 - 成蘆橋及周邊瓶頸路口改善計畫專頁（直連）",
+          "doc_agency": "新北市政府交通局 / 工務局",
+          "doc_number": "成蘆大橋瓶頸改善與三民路口交通維持計畫",
+          "doc_excerpt": "【官方路口分析報告】：成蘆橋為跨越二重疏洪道之唯一主幹橋樑，晨峰時段雙向容量已達飽和邊緣。橋頭引道若再承載大型批發市場左轉進入環堤大道之龐大車隊，將使三民路路口停等隊距回堵跨河橋面，直接阻斷急重症救護車輛之黃金通行時間。",
+          "note": "成蘆橋五股端往蘆洲方向清晨即有龐大車流，任何轉向交織阻塞皆具高外溢延滯效應。"
+        }
+      }
+    }
+  ]
+}
