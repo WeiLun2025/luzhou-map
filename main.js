@@ -251,7 +251,7 @@ function createPopupContent(feature, scenario) {
 
       <div class="popup-footer-box">
         <div class="popup-disclaimer">
-          💡 本模擬為在地鄉親針對都市計畫方案之生活情境推演，供居民理性討論家園未來。
+          💡 本模擬為在地鄉親針對都市計畫方案之生活情境推演，非官方評估，數字多為估算，供居民理性討論家園未來。
         </div>
         <!--<div class="popup-action-row">
           <button class="btn-popup-share" onclick="generateShareCardForFeature('${feature.id}')">
@@ -363,13 +363,14 @@ function renderRoutes() {
 
         <div class="popup-footer-box">
           <div class="popup-disclaimer">
-            💡 本模擬為在地鄉親針對都市計畫方案之生活情境推演，供居民理性討論家園未來。
+            💡 本模擬為在地鄉親針對都市計畫方案之生活情境推演，非官方評估，數字多為估算，供居民理性討論家園未來。
           </div>
           <!-- <div class="popup-action-row">
             <button class="btn-popup-share" onclick="generateShareCardForFeature('${feature.id}')">
               📸 分享此路段生活推演圖卡
             </button>
           </div> -->
+        </div>
       </div>
     `;
 
@@ -385,7 +386,7 @@ function renderRoutes() {
   });
 }
 
-// 更新底部儀表板 HUD 數據 (全面採用核實數據)
+// 更新底部儀表板 HUD 數據（情境推演數值，非官方評估）
 function updateHudDashboard() {
   const elTrucks = document.getElementById('hudTrucks');
   const elGreen = document.getElementById('hudGreen');
@@ -394,36 +395,36 @@ function updateHudDashboard() {
 
   if (isScenarioA) {
     if (elTrucks) {
-      elTrucks.textContent = '估逾 1,200~2,000 輛次/日 (重度)';
+      elTrucks.textContent = '估達上千輛次/日 (估算)';
       elTrucks.className = 'hud-value danger';
     }
     if (elGreen) {
-      elGreen.textContent = '劃設 3.45 公頃批發市場 (壓縮綠帶)';
+      elGreen.textContent = '規劃 3.5 公頃批發市場用地';
       elGreen.className = 'hud-value danger';
     }
     if (elHospital) {
-      elHospital.textContent = '卡關延宕 3~5 年 (審查退回)';
+      elHospital.textContent = '恐連帶延後 (中央要求再評估)';
       elHospital.className = 'hud-value warning';
     }
     if (elTrafficSpeed) {
-      elTrafficSpeed.textContent = '尖峰 < 15 km/h (F級嚴重壅塞)';
+      elTrafficSpeed.textContent = '尖峰可能 < 15 km/h (推演)';
       elTrafficSpeed.className = 'hud-value danger';
     }
   } else {
     if (elTrucks) {
-      elTrucks.textContent = '0 輛 (維持社區型態)';
+      elTrucks.textContent = '無批發車流 (維持現況)';
       elTrucks.className = 'hud-value safe';
     }
     if (elGreen) {
-      elGreen.textContent = '完整保留 (公24親水綠帶)';
+      elGreen.textContent = '維持公園綠地用途 (公24)';
       elGreen.className = 'hud-value safe';
     }
     if (elHospital) {
-      elHospital.textContent = '優先獨立審議動工';
+      elHospital.textContent = '可獨立審議 (兩案脫鉤)';
       elHospital.className = 'hud-value safe';
     }
     if (elTrafficSpeed) {
-      elTrafficSpeed.textContent = '40 - 50 km/h (穩定服務水準)';
+      elTrafficSpeed.textContent = '約 40-50 km/h (順暢)';
       elTrafficSpeed.className = 'hud-value safe';
     }
   }
@@ -463,18 +464,18 @@ function updateHudDashboard() {
 
 // 頂部全景圖卡生成
 function generateCurrentViewShareCard() {
-  const currentScenarioName = isScenarioA ? '🔴 情境 A：塞入批發市場與水肥站' : '🟢 情境 B：無批發市場・兩案脫鉤';
+  const currentScenarioName = isScenarioA ? '🔴 情境 A：批發市場遷入（推演）' : '🟢 情境 B：無批發市場・兩案脫鉤';
   const customFeature = {
     properties: {
-      name: isScenarioA ? '蘆洲北側開發區：果菜市場衝擊全景分析' : '蘆洲北側開發區：維持原始綠帶健康生活',
+      name: isScenarioA ? '蘆洲北側開發區：若果菜市場遷入的生活衝擊推演' : '蘆洲北側開發區：若不設市場的生活情境推演',
       location_description: '環堤大道沿線、蘆洲抽水站至成蘆橋區域'
     }
   };
   const customScenario = {
     status: currentScenarioName,
     impact: isScenarioA 
-      ? '批發市場強遷蘆洲將引入大量果菜大貨車與水肥處理設施，造成全區交通癱瘓與居住品質嚴重倒退。'
-      : '堅持 108 年公開展覽版本，將急重症醫院與果菜市場脫鉤，守護親水綠帶與醫療優先權益。',
+      ? '若批發市場遷入蘆洲，清晨可能湧入大量果菜貨車與批發車流，對環堤大道與周邊生活道路的交通與居住品質都是挑戰。（情境推演）'
+      : '若不設批發市場並讓急重症醫院與果菜市場脫鉤，濱河用地可維持公園綠地，醫院也能獨立走審議程序。（情境推演）',
     badge_color: isScenarioA ? '#FF3344' : '#10B981'
   };
 
@@ -590,5 +591,3 @@ function renderFinalTemplate(mapDataUrl, feature, scenario) {
 function closeShareModal() {
   document.getElementById('shareModal').classList.add('hidden');
 }
-
-

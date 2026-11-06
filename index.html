@@ -8,8 +8,11 @@
 
   <!-- Open Graph 社群分享標籤 -->
   <meta property="og:title" content="蘆洲平行世界：蘆北開發模擬器">
-  <meta property="og:description" content="三重果菜市場搬遷蘆洲？108 年公展 vs 111 年塞入果菜市場與水肥站！透過互動模擬地圖一覽交通與生活環境衝擊。">
+  <meta property="og:description" content="三重果菜市場若搬遷蘆洲，生活會有什麼不同？透過互動模擬地圖，一覽兩種情境下的交通與生活環境推演。">
   <meta property="og:type" content="website">
+
+  <!-- 網站分頁圖示 -->
+  <link rel="icon" type="image/ico" href="/assets/favicon.ico">
 
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -28,10 +31,10 @@
 
     <!-- A/B 雙情境切換群組 -->
     <div class="scenario-group">
-      <button id="btnScenarioA" class="panel-btn btn-scenario-a active" onclick="setScenario(true)" title="查看 111 年塞入果菜市場與水肥站情境">
+      <button id="btnScenarioA" class="panel-btn btn-scenario-a active" onclick="setScenario(true)" title="查看若果菜市場遷入蘆北的情境推演">
         🔴 情境 A：有批發市場
       </button>
-      <button id="btnScenarioB" class="panel-btn btn-scenario-b" onclick="setScenario(false)" title="查看 108 年原始公展（公園綠地、醫療優先、兩案脫鉤）情境">
+      <button id="btnScenarioB" class="panel-btn btn-scenario-b" onclick="setScenario(false)" title="查看若不設批發市場、兩案脫鉤的情境推演">
         🟢 情境 B：無批發市場（兩案脫鉤）
       </button>
     </div>
@@ -57,19 +60,19 @@
   <aside class="hud-impact-bar" id="hudBar">
     <div class="hud-item">
       <span class="hud-label">批發採購車流</span>
-      <span class="hud-value danger" id="hudTrucks">估逾 1,200~2,000 輛次/日 (重度)</span>
+      <span class="hud-value danger" id="hudTrucks">估達上千輛次/日 (估算)</span>
     </div>
     <div class="hud-item">
-      <span class="hud-label">公24 親水綠地</span>
-      <span class="hud-value danger" id="hudGreen">劃設 3.45 公頃批發市場 (壓縮綠帶)</span>
+      <span class="hud-label">公24 公園預定地</span>
+      <span class="hud-value danger" id="hudGreen">規劃 3.5 公頃批發市場用地</span>
     </div>
     <div class="hud-item">
       <span class="hud-label">蘆洲急重症醫院</span>
-      <span class="hud-value warning" id="hudHospital">卡關延宕 3~5 年 (審查退回)</span>
+      <span class="hud-value warning" id="hudHospital">恐連帶延後 (中央要求再評估)</span>
     </div>
     <div class="hud-item">
       <span class="hud-label">環堤大道預估流速</span>
-      <span class="hud-value danger" id="hudTrafficSpeed">尖峰 &lt; 15 km/h (F級嚴重壅塞)</span>
+      <span class="hud-value danger" id="hudTrafficSpeed">尖峰可能 &lt; 15 km/h (推演)</span>
     </div>
   </aside>
 
@@ -77,11 +80,11 @@
   <div id="landingModal" class="modal-overlay hidden">
     <div class="modal-window">
       <div class="modal-header">
-        <span class="modal-tag">📌 蘆洲在地居民自發整理・都市計畫生活衝擊對比</span>
+        <span class="modal-tag">📌 蘆洲在地居民自發整理・都市計畫生活衝擊情境推演</span>
         <h2 class="modal-title">蘆洲平行世界：蘆北開發模擬器</h2>
         <p class="modal-subtitle">
           三重果菜市場搬遷蘆洲？銀河灣計畫對在地生活有何影響？<br/>
-          以公開都市計畫書與官方會議紀錄為憑，客觀對比生活衝擊，供全體鄉親理性參考。
+          依公開的都市計畫規劃內容，推演不同決策下的生活衝擊，供全體鄉親理性參考。本站為居民自發整理的情境推演，非官方評估。
         </p>
         <button class="modal-close-icon" onclick="closeLandingModal()" title="關閉">✕</button>
       </div>
@@ -91,43 +94,43 @@
         <div class="timeline-card">
           <div class="time-step step-1">
             <div class="step-year">108 年公開展覽</div>
-            <div class="step-title">純淨綠地與急重症醫院</div>
+            <div class="step-title">公園綠地、醫療設施與捷運機廠</div>
             <div class="step-desc">
-              原始通盤檢討草案規劃為「公24 公園綠地」、醫療設施專區（蘆洲急重症醫院）與捷運機廠，廣受三蘆鄉親支持。
+              108 年 8 月公展的通盤檢討案，規劃重點為公園綠地、醫療設施與捷運機廠用地。市府自述 108 年 12 月才開始評估果菜市場異地搬遷。
             </div>
           </div>
           <div class="time-step step-2">
-            <div class="step-year">111 年突襲變更</div>
-            <div class="step-title">塞入果菜市場與水肥站</div>
+            <div class="step-year">109 年納入批發市場</div>
+            <div class="step-title">新增批發市場用地</div>
             <div class="step-desc">
-              新北市政府在未重新舉辦公展的情況下，將「大台北果菜批發市場」與「水肥投入站」塞入蘆北抽水站旁用地。
+              市府自述 109 年 3 月在市都委會提出蘆北批發市場用地需求，審查通過後報部。地方質疑加入果菜市場後並未重新公展。
             </div>
           </div>
           <div class="time-step step-3">
-            <div class="step-year">內政部都委會決議</div>
-            <div class="step-title">認定重大瑕疵退回重審</div>
+            <div class="step-year">114 年內政部都委會</div>
+            <div class="step-title">要求市府再評估、重辦公展</div>
             <div class="step-desc">
-              中央都委會認定塞入批發市場屬於「重大變更」，程序有瑕疵，正式退回新北市政府要求重辦公展說明會。
+              114 年 10 月 28 日第 1089 次會議審決請市府再行評估（媒體報導為退回）。依都市計畫法第 19 條，須重新辦理公開展覽與說明會，取得地方共識後再續行程序。
             </div>
           </div>
         </div>
 
         <!-- 官員關鍵談話佐證錄音 -->
         <div class="quote-box">
-          <b>🎙️ 官員關鍵談話佐證（新北市農業局長說明會公開發言）：</b><br/>
-          <i>「這是財務考量，三重沒搬過來，銀河灣也沒辦法執行，經費根本找不到……」</i>
-          <cite>— 證實新北市府將果菜市場與急重症醫院、蘆北整體徵收強行綑綁，引發在地居民對嫌惡設施進駐的強烈憂慮。</cite>
+          <b>🎙️ 官員談話摘錄（114 年 7 月 29 日銀河灣計畫地方說明會，新北市農業局長發言）：</b><br/>
+          <i>「這是財務的考量嘛！……三重沒搬過來，銀河灣也沒辦法執行的，因為開發的所謂的經費你根本就找不到。」</i>
+          <cite>— 官方會議紀錄亦載明：三重果菜市場若沒有搬遷過來，銀河灣計畫也無法執行。此段發言顯示市府將果菜市場搬遷視為銀河灣計畫能否推動的前提，這也是地方關切「兩案是否應脫鉤」的原因之一。</cite>
         </div>
 
         <!-- 雙情境對照說明方塊 -->
         <div class="scenario-explain-box">
           <div class="scenario-pill danger">
-            <h4>🔴 情境 A：塞入批發市場（現行市府推動案）</h4>
-            <p>清晨百輛重型菜車塞爆環堤大道，污水異味隨南風吹入舊市區，醫院遭市場包裹拖延卡關。</p>
+            <h4>🔴 情境 A：批發市場遷入（市府原規劃案）</h4>
+            <p>若批發市場遷入：清晨批發車流可能湧入環堤大道，水肥設施的異味可能影響周邊，醫院審議恐受市場爭議牽連而延後。</p>
           </div>
           <div class="scenario-pill safe">
-            <h4>🟢 情境 B：無批發市場（地方民意：兩案脫鉤）</h4>
-            <p>恢復 108 年純綠地親水空間，急重症醫院優先獨立推動核定，守護三蘆 50 萬人口醫療與安寧生活。</p>
+            <h4>🟢 情境 B：無批發市場（地方訴求：兩案脫鉤）</h4>
+            <p>若不設批發市場、兩案脫鉤：濱河用地維持公園綠地，急重症醫院可獨立走審議程序，更早補上三蘆的重症醫療缺口。</p>
           </div>
         </div>
       </div>
