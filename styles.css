@@ -23,6 +23,10 @@
   --radius-sm: 6px;
   --radius-md: 12px;
   --radius-pill: 30px;
+
+  /* 由 main.js 依實際尺寸寫入，供手機版讓開導覽列 / HUD 使用 */
+  --navbar-h: 56px;
+  --hud-h: 64px;
 }
 
 * {
@@ -44,7 +48,8 @@ body, html {
 /* ================= 地圖容器與免 API Key 暗黑底圖濾鏡 ================= */
 #map {
   width: 100vw;
-  height: 100vh;
+  height: 100vh;   /* 舊瀏覽器備援 */
+  height: 100dvh;  /* 手機網址列收合時仍貼合可視高度 */
   z-index: 1;
   background: #0d0f14;
 }
@@ -78,6 +83,31 @@ body, html {
   color: #e5e7eb !important;
   cursor: pointer;
   margin-bottom: 4px;
+}
+
+/* ================= 回到初始視角按鈕（Leaflet 自訂控制項） ================= */
+.reset-view-control a.reset-view-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #374151;
+  cursor: pointer;
+}
+
+.reset-view-control a.reset-view-btn:hover {
+  color: #000;
+}
+
+.reset-view-btn svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+/* 保留鍵盤操作時的焦點框（下方全域規則會移除其他元素的 outline） */
+.leaflet-container .reset-view-btn:focus-visible {
+  outline: 2px solid var(--yellow-alert) !important;
+  outline-offset: -2px;
 }
 
 /* ================= 頂部導覽與情境控制膠囊 ================= */
@@ -281,6 +311,7 @@ body, html {
   left: 0;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   background: rgba(5, 6, 8, 0.85);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -307,6 +338,7 @@ body, html {
   max-width: 760px;
   width: 100%;
   max-height: 90vh;
+  max-height: 90dvh;
   overflow-y: auto;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 42, 58, 0.15);
   display: flex;
@@ -549,8 +581,9 @@ body, html {
 
 .leaflet-popup-content {
   margin: 0 !important;
-  min-width: 290px;
-  max-width: 360px;
+  /* 小螢幕時不超出可視寬度（左右各保留約 24px） */
+  min-width: min(290px, calc(100vw - 48px));
+  max-width: min(360px, calc(100vw - 48px));
 }
 
 .leaflet-popup-tip {
@@ -908,14 +941,21 @@ path.leaflet-interactive:active,
   color: #9ca3af;
 }
 
-/* ================= 響應式手機適應 (Mobile Responsive) ================= */
-@media (max-width: 768px) {
+/* ==========================================================================
+   響應式 (Responsive)
+   ≤900px：平板直式 / 手機。導覽列可換行，右上圖層鈕改放在導覽列下方，
+           右下縮放 / 重置鈕上移至 HUD 之上，避免互相重疊。
+   ≤768px：彈窗版面。
+   ≤600px：導覽列滿版、隱藏品牌標籤。
+   ========================================================================== */
+@media (max-width: 900px) {
   .top-navbar {
     top: 10px;
     padding: 6px 10px;
     gap: 6px;
     flex-wrap: wrap;
     justify-content: center;
+    max-width: calc(100vw - 16px);
   }
 
   .brand-badge {
@@ -928,42 +968,126 @@ path.leaflet-interactive:active,
     font-size: 12px;
   }
 
-  .tool-btn span {
-    display: none; /* 手機版僅顯示圖示 */
+  .tool-btn {
+    padding: 6px 10px;
+  }
+
+  /* 右上角底圖切換：讓到導覽列下方 */
+  .leaflet-top.leaflet-right {
+    top: calc(var(--navbar-h) + 10px);
+    right: 0;
+  }
+
+  /* 右下角縮放 / 重置 / 圖資標示：讓到 HUD 上方 */
+  .leaflet-bottom.leaflet-right {
+    bottom: calc(var(--hud-h) + 16px + env(safe-area-inset-bottom, 0px));
   }
 
   .hud-impact-bar {
-    bottom: 12px;
+    left: 8px;
+    right: 8px;
+    transform: none;
+    width: auto;
+    max-width: none;
+    bottom: calc(10px + env(safe-area-inset-bottom, 0px));
     padding: 8px 12px;
-    gap: 8px;
+    gap: 10px;
     flex-wrap: nowrap;
     overflow-x: auto;
-    width: 95vw;
+    -webkit-overflow-scrolling: touch;
     border-radius: var(--radius-sm);
   }
 
   .hud-item {
-    min-width: 105px;
+    flex: 0 0 auto;
+    min-width: 120px;
     font-size: 11px;
   }
 
   .hud-value {
     font-size: 12px;
+    white-space: nowrap;
   }
+}
 
+@media (max-width: 768px) {
   .scenario-explain-box {
     grid-template-columns: 1fr;
   }
 
+  .modal-overlay {
+    padding: 12px;
+  }
+
   .modal-window {
     max-height: 94vh;
+    max-height: 94dvh;
   }
 
   .modal-header, .modal-body, .modal-footer {
     padding: 16px 20px;
   }
 
+  .modal-close-icon {
+    top: 14px;
+    right: 14px;
+  }
+
   .modal-title {
     font-size: 19px;
+    padding-right: 28px; /* 避開右上角關閉鈕 */
+  }
+
+  .modal-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .btn-cta-enter {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* 彈窗內容過高時可在彈窗內捲動，不會被導覽列 / HUD 遮住 */
+  .popup-container {
+    max-height: 60vh;
+    max-height: 60dvh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 600px) {
+  .top-navbar {
+    left: 8px;
+    right: 8px;
+    transform: none;
+    max-width: none;
+    border-radius: 16px;
+  }
+
+  /* 品牌標籤（名稱已在說明彈窗中）：手機版隱藏以節省一整列高度 */
+  .brand-badge {
+    display: none;
+  }
+
+  .scenario-group {
+    width: 100%;
+    gap: 6px;
+  }
+
+  .scenario-group .panel-btn {
+    flex: 1;
+    justify-content: center;
+    text-align: center;
+    white-space: normal;
+    line-height: 1.25;
+    padding: 6px 8px;
+  }
+
+  .scenario-group .tool-btn {
+    flex: 1;
+    justify-content: center;
   }
 }

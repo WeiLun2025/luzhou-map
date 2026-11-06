@@ -11,15 +11,61 @@ let currentPolylines = [];
 let showTrafficLayer = true;
 let activePopupPoi = null;
 
+// 初始視角（「回到初始視角」按鈕與首次載入共用）
+const INITIAL_VIEW = { center: [25.0965, 121.4680], zoom: 15 };
+
 // 初始化 Leaflet 地圖
 const map = L.map('map', {
   zoomControl: false,
   minZoom: 13,
   maxZoom: 19
-}).setView([25.0965, 121.4680], 15);
+}).setView(INITIAL_VIEW.center, INITIAL_VIEW.zoom);
 
 // 縮放按鈕置於右下角
 L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+// 回到初始視角按鈕（加在縮放按鈕之後，Leaflet 會把它疊在縮放按鈕上方）
+const ResetViewControl = L.Control.extend({
+  options: { position: 'bottomright' },
+
+  onAdd: function () {
+    const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control reset-view-control');
+    const btn = L.DomUtil.create('a', 'reset-view-btn', container);
+    btn.href = '#';
+    btn.setAttribute('role', 'button');
+    btn.setAttribute('title', '回到初始視角');
+    btn.setAttribute('aria-label', '回到初始視角');
+    btn.innerHTML =
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
+      'stroke-linecap="round" aria-hidden="true">' +
+      '<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2" fill="currentColor"/>' +
+      '<path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>';
+
+    // 避免點按鈕時同時觸發地圖拖曳 / 雙擊縮放
+    L.DomEvent.disableClickPropagation(container);
+    L.DomEvent.on(btn, 'click', function (e) {
+      L.DomEvent.preventDefault(e);
+      resetMapView();
+    });
+    return container;
+  }
+});
+new ResetViewControl().addTo(map);
+
+// 平滑飛回初始位置與縮放等級，並關閉開啟中的彈窗
+function resetMapView() {
+  map.closePopup();
+  activePopupPoi = null;
+  map.stop(); // 取消進行中的平移 / 縮放動畫
+
+  const reduceMotion = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion) {
+    map.setView(INITIAL_VIEW.center, INITIAL_VIEW.zoom, { animate: false });
+  } else {
+    map.flyTo(INITIAL_VIEW.center, INITIAL_VIEW.zoom, { duration: 0.8 });
+  }
+}
 
 // 1. 暗黑警示底圖（OpenStreetMap 繁中圖資 + CSS 高對比暗黑濾鏡，免 API Key、零浮水印）
 const darkTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -51,8 +97,55 @@ const baseMaps = {
 };
 L.control.layers(baseMaps, null, { position: 'topright' }).addTo(map);
 
+// =========================================================================
+// 版面量測：讓彈窗與右側控制項避開頂部導覽列 / 底部 HUD（桌機與手機通用）
+// =========================================================================
+
+// 所有彈窗共用同一組 Point 物件，視窗尺寸改變時直接修改其數值即可，不需重新綁定彈窗
+const POPUP_PAD_TL = L.point(20, 95);
+const POPUP_PAD_BR = L.point(20, 90);
+
+function syncLayoutVars() {
+  const root = document.documentElement;
+  const nav = document.querySelector('.top-navbar');
+  const hud = document.getElementById('hudBar');
+
+  if (nav) {
+    root.style.setProperty('--navbar-h', nav.offsetHeight + 'px');
+    POPUP_PAD_TL.y = Math.round(nav.getBoundingClientRect().bottom) + 12;
+  }
+  if (hud) {
+    root.style.setProperty('--hud-h', hud.offsetHeight + 'px');
+    POPUP_PAD_BR.y = Math.max(0, Math.round(window.innerHeight - hud.getBoundingClientRect().top)) + 12;
+  }
+}
+
+function initLayoutSync() {
+  syncLayoutVars();
+  window.addEventListener('resize', syncLayoutVars);
+  window.addEventListener('orientationchange', syncLayoutVars);
+  if (window.ResizeObserver) {
+    const ro = new ResizeObserver(syncLayoutVars);
+    const nav = document.querySelector('.top-navbar');
+    const hud = document.getElementById('hudBar');
+    if (nav) ro.observe(nav);
+    if (hud) ro.observe(hud);
+  }
+}
+
+// 彈窗共用設定（小螢幕自動縮窄、並避開導覽列與 HUD）
+function getPopupOptions() {
+  return {
+    autoPan: true,
+    autoPanPaddingTopLeft: POPUP_PAD_TL,
+    autoPanPaddingBottomRight: POPUP_PAD_BR,
+    maxWidth: Math.min(300, window.innerWidth - 48)
+  };
+}
+
 // 頁面載入時讀取 POI 資料並設定 Modal 邏輯
 document.addEventListener('DOMContentLoaded', () => {
+  initLayoutSync();
   initLandingModal();
   loadPoiData();
 });
@@ -167,13 +260,9 @@ function renderPois() {
 
     const marker = L.marker([lat, lng], { icon: customIcon }).addTo(map);
 
-    // 建立 Popup 內容並設定安全邊距（頂部預留 95px 避免被頂部控制器遮擋）
+    // 建立 Popup 內容並設定安全邊距（依導覽列 / HUD 實際尺寸動態避讓）
     const popupHTML = createPopupContent(feature, scenario);
-    marker.bindPopup(popupHTML, {
-      autoPan: true,
-      autoPanPaddingTopLeft: L.point(20, 95),
-      autoPanPaddingBottomRight: L.point(20, 90)
-    });
+    marker.bindPopup(popupHTML, getPopupOptions());
 
     // POI 節點加入 Hover 浮動提示與高亮光暈效果（比照車流圖層）
     marker.on('mouseover', () => {
@@ -268,7 +357,7 @@ function renderRoutes() {
   currentPolylines.forEach(p => map.removeLayer(p));
   currentPolylines = [];
 
-  if (!showTrafficLayer) return;
+  if (!poiData || !showTrafficLayer) return;
 
   const routes = poiData.features.filter(f => f.geometry.type === 'LineString');
 
@@ -374,12 +463,8 @@ function renderRoutes() {
       </div>
     `;
 
-    // 設定安全避讓邊距（頂部預留 95px 避免被頂部控制器遮擋）
-    hitboxLine.bindPopup(routePopupContent, {
-      autoPan: true,
-      autoPanPaddingTopLeft: L.point(20, 95),
-      autoPanPaddingBottomRight: L.point(20, 90)
-    });
+    // 設定安全避讓邊距（依導覽列 / HUD 實際尺寸動態避讓）
+    hitboxLine.bindPopup(routePopupContent, getPopupOptions());
 
     // 存入陣列供切換時清理
     currentPolylines.push(visualLine, hitboxLine);
