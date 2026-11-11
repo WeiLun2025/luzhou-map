@@ -12,7 +12,7 @@ let showTrafficLayer = true;
 let activePopupPoi = null;
 
 // 初始視角（「回到初始視角」按鈕與首次載入共用）
-const INITIAL_VIEW = { center: [25.0965, 121.4680], zoom: 15 };
+const INITIAL_VIEW = { center: [25.091075081217646, 121.4707620829601], zoom: 15 };
 
 // 初始化 Leaflet 地圖
 const map = L.map('map', {
